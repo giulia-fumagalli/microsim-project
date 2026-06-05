@@ -82,7 +82,7 @@
 <body>
   <div class="header">
     <div class="header-left">
-      <a href="dashboard.html" class="back-link">
+      <a href="index.html" class="back-link" id="back-link">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L4 7l5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Dashboard
       </a>
@@ -128,14 +128,17 @@
       <div class="errori-list" id="r-errori"></div>
       <div class="btn-group">
         <button class="btn-retry" onclick="resetTest()">Nuovo test</button>
-        <button class="btn-dash" onclick="window.location.href='dashboard.html'">Dashboard</button>
+        <button class="btn-dash" onclick="window.location.href=dashUrl">Dashboard</button>
       </div>
     </div>
   </div>
   <script>
-    if (!sessionStorage.getItem('auth_user')) window.location.href = 'login.html';
-    const gruppo = sessionStorage.getItem('auth_gruppo') || '';
+    if (!localStorage.getItem('auth_user')) window.location.href = 'index.html';
+    const authUser  = localStorage.getItem('auth_user')  || '';
+    const gruppo    = localStorage.getItem('auth_gruppo') || '';
+    const dashUrl   = gruppo === 'ISP' ? 'dashboard-isp.html' : gruppo === 'Interaziendale' ? 'dashboard-inter.html' : 'index.html';
     document.getElementById('gruppo-badge').textContent = gruppo || 'Simulazione';
+    document.getElementById('back-link').href = dashUrl;
     const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwgb-mm9AedoDRlqUjxcvw6N0JDmvsdkiBbBEVfUzZLv964OK2JN4jD2qPbU2KMavCDYw/exec';
     let allQuestions = [], testQuestions = [], currentIndex = 0, answers = [];
     let questionStartTime = 0, timerInterval = null;
@@ -252,12 +255,13 @@
     function goMicrosim(tema) { sessionStorage.setItem('microsim_tema', tema); window.location.href = 'microsim.html'; }
 
     function saveResult(result) {
-      // Salva nel browser
-      const key = 'alpha_test_results_' + (gruppo||'default');
+      // Salva nel formato letto dalle dashboard (chiave = username)
+      const key = 'alpha_test_results_' + (authUser || 'default');
+      const entry = { tipo: 'full', corrette: result.correct, totale: result.total, pct: result.pct, ts: Date.now(), byTema: result.byTema };
       const existing = JSON.parse(localStorage.getItem(key)||'[]');
-      existing.push(result); localStorage.setItem(key, JSON.stringify(existing));
+      existing.push(entry); localStorage.setItem(key, JSON.stringify(existing));
       const all = JSON.parse(localStorage.getItem('alpha_test_results_ALL')||'[]');
-      all.push(result); localStorage.setItem('alpha_test_results_ALL', JSON.stringify(all));
+      all.push({ ...entry, user: authUser, gruppo }); localStorage.setItem('alpha_test_results_ALL', JSON.stringify(all));
       // Invia a Google Sheets via GET
       const params = new URLSearchParams({
         data: result.data,

@@ -75,7 +75,7 @@
 <body>
   <div class="header">
     <div class="header-left">
-      <a href="dashboard.html" class="back-link">
+      <a href="index.html" class="back-link" id="back-link">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L4 7l5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Dashboard
       </a>
@@ -119,12 +119,19 @@
       <div class="btn-group">
         <button class="btn-retry" onclick="retryTema()">Riprova questo tema</button>
         <button class="btn-back" onclick="backToSelect()">Scegli altro tema</button>
+        <button class="btn-back" onclick="window.location.href=dashUrl">Dashboard</button>
       </div>
     </div>
   </div>
 
   <script>
-    if (!sessionStorage.getItem('auth_user')) window.location.href = 'login.html';
+    if (!localStorage.getItem('auth_user')) window.location.href = 'index.html';
+
+    const authUser  = localStorage.getItem('auth_user')  || '';
+    const authGruppo = localStorage.getItem('auth_gruppo') || '';
+    const dashUrl   = authGruppo === 'ISP' ? 'dashboard-isp.html' : authGruppo === 'Interaziendale' ? 'dashboard-inter.html' : 'index.html';
+
+    document.getElementById('back-link').href = dashUrl;
 
     const ICONS = { 'Risk Management':'🛡️', 'Security aziendale':'🏢', 'Normativa':'📋', 'Crisis & emergenze':'🚨', 'Geopolitica':'🌍', 'Sicurezza informazioni':'🔒' };
     const NUM_QUESTIONS = 15;
@@ -151,8 +158,7 @@
       });
 
       // Migliori score salvati
-      const gruppo = sessionStorage.getItem('auth_gruppo') || 'default';
-      const results = JSON.parse(localStorage.getItem('alpha_test_results_' + gruppo) || '[]');
+      const results = JSON.parse(localStorage.getItem('alpha_test_results_' + authUser) || '[]');
       const bestByTema = {};
       results.forEach(r => {
         if (r.byTema) Object.entries(r.byTema).forEach(([t, d]) => {
@@ -261,6 +267,13 @@
             <div class="errore-row"><span class="errore-badge badge-wrong">Tua risposta</span><span style="color:var(--red)">${e.scelta}</span></div>
             <div class="errore-row"><span class="errore-badge badge-correct">Risposta corretta</span><span style="color:var(--green); font-weight:500">${e.corretta}</span></div>
           </div>`).join('');
+
+      // Salva risultato nel formato letto dalle dashboard
+      const key      = 'alpha_test_results_' + authUser;
+      const existing = JSON.parse(localStorage.getItem(key) || '[]');
+      existing.push({ tipo: 'micro', corrette: correct, totale: answers.length, pct, ts: Date.now(), tema: currentTema });
+      localStorage.setItem(key, JSON.stringify(existing));
+
       buildTemiGrid(); // aggiorna score cards
     }
 
