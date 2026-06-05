@@ -59,67 +59,37 @@
     .school-header {
       position: absolute;
       top: 0; left: 0; right: 0;
-      padding: 36px 44px;
+      padding: 32px 44px;
       z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
 
-    .school-eyebrow {
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 3.5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 5px;
-    }
-
-    .school-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 300;
-      color: rgba(255,255,255,0.92);
-      letter-spacing: 0.04em;
-      line-height: 1.25;
-    }
-
-    .school-name em {
-      font-style: italic;
-      color: #FCD34D;
-    }
-
-    .school-divider {
-      width: 32px;
+    .school-header::after {
+      content: '';
+      flex: 1;
       height: 1px;
-      background: rgba(245,158,11,0.5);
-      margin-top: 10px;
+      background: linear-gradient(to right, rgba(255,255,255,0.2), transparent);
     }
 
-    .bg-shapes {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
+    .school-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 400;
+      font-style: italic;
+      color: rgba(255,255,255,0.90);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
     }
 
-    .bg-shapes::before {
-      content: '';
-      position: absolute;
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
-      top: -100px;
-      right: -100px;
+    .school-title strong {
+      font-style: normal;
+      font-weight: 600;
+      color: #ffffff;
     }
 
-    .bg-shapes::after {
-      content: '';
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
-      bottom: 60px;
-      left: 40px;
-    }
+    .bg-shapes { display: none; }
 
     .logo-area { display: none; }
 
@@ -417,9 +387,7 @@
     <div class="bg-shapes"></div>
 
     <div class="school-header">
-      <div class="school-eyebrow">Scuola Internazionale</div>
-      <div class="school-name"><em>Etica</em> &amp; Sicurezza</div>
-      <div class="school-divider"></div>
+      <div class="school-title"><strong>Scuola Internazionale</strong> Etica &amp; Sicurezza</div>
     </div>
 
     <div class="left-content">
