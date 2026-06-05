@@ -42,18 +42,24 @@
     .bg-photo {
       position: absolute;
       inset: 0;
-      background: url('foto.png') center 20% / cover no-repeat;
+      background: linear-gradient(155deg, #1D4ED8 0%, #0891B2 50%, #0D9488 100%);
     }
 
     .bg-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        155deg,
-        rgba(29, 78, 216, 0.88) 0%,
-        rgba(8, 145, 178, 0.78) 50%,
-        rgba(13, 148, 136, 0.82) 100%
-      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bg-overlay img {
+      width: 62%;
+      max-width: 320px;
+      opacity: 0.22;
+      filter: brightness(0) invert(1);
+      pointer-events: none;
+      user-select: none;
     }
 
     .bg-shapes {
@@ -84,19 +90,7 @@
       left: 40px;
     }
 
-    .logo-area {
-      position: absolute;
-      top: 40px;
-      left: 44px;
-      z-index: 3;
-    }
-
-    .logo-area img {
-      height: 48px;
-      width: auto;
-      filter: brightness(0) invert(1);
-      opacity: 0.92;
-    }
+    .logo-area { display: none; }
 
     .left-content {
       position: relative;
@@ -383,37 +377,33 @@
   <!-- ── LEFT ── -->
   <div class="left-panel">
     <div class="bg-photo"></div>
-    <div class="bg-overlay"></div>
+    <div class="bg-overlay"><img src="logo_3a.png" alt="Logo" /></div>
     <div class="bg-shapes"></div>
-
-    <div class="logo-area">
-      <img src="logo_3a.png" alt="Logo" />
-    </div>
 
     <div class="left-content">
       <div class="badge"><div class="dot"></div><span>Piattaforma Formativa</span></div>
-      <h1 class="hero-title">Simulazioni di<br/><em>Security</em><br/>Professionale</h1>
+      <h1 class="hero-title">Alpha Test —<br/>Simulazione<br/>prova scritta</h1>
       <p class="hero-sub">
-        Accedi per svolgere microsimulazioni e simulazioni complete in un ambiente sicuro, tracciato e professionale.
+        Accedi per allenare le tue conoscenze teoriche attraverso la simulazione integrale o le micro-simulazioni focalizzate su specifici temi.
       </p>
       <div class="feat-list">
         <div class="feat">
           <div class="feat-ico">
-            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
           </div>
-          <span>Microsimulazioni a scenari reali</span>
+          <span>Microsimulazioni</span>
         </div>
         <div class="feat">
           <div class="feat-ico">
             <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
           </div>
-          <span>Simulazione completa multi-scenario</span>
+          <span>Simulazione completa</span>
         </div>
         <div class="feat">
           <div class="feat-ico">
-            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
           </div>
-          <span>Monitoraggio classi in tempo reale</span>
+          <span>Correzione degli errori</span>
         </div>
       </div>
     </div>
