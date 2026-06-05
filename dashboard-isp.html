@@ -214,10 +214,6 @@
     .typing-dots span:nth-child(3) { animation-delay: .4s; }
     @keyframes blink { 0%,80%,100% { opacity:.2; } 40% { opacity:1; } }
 
-    .chat-no-key {
-      background: #FFF7ED; border-top: 1px solid #FED7AA;
-      padding: 8px 14px; font-size: 11px; color: #92400E; text-align: center; flex-shrink: 0;
-    }
     .chat-footer {
       border-top: 1px solid var(--s200); padding: 12px; display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
     }
@@ -399,9 +395,6 @@
             <div class="bubble-text">Ciao! Sono il tuo assistente per la preparazione all'esame di guardia giurata. Chiedimi pure su qualsiasi argomento: normativa, procedure, diritti e doveri. Sono qui per aiutarti! 💪</div>
           </div>
         </div>
-        <div id="api-key-warning" class="chat-no-key" style="display:none">
-          ⚠️ API key non configurata — modifica <code>API_KEY</code> nel file HTML per attivare la chat.
-        </div>
         <div class="chat-footer">
           <textarea id="chat-input" rows="1" placeholder="Fai una domanda sull'esame..." onkeydown="handleKey(event)"></textarea>
           <button id="chat-send" onclick="sendMessage()">
@@ -449,14 +442,48 @@
     updateCountdown(); setInterval(updateCountdown, 1000);
 
     /* ── CHAT ── */
-    // ⚠️ Sostituisci con la tua API key Anthropic (mantienila privata, non condividere questo file)
-    const API_KEY = 'INSERISCI_QUI_LA_TUA_CHIAVE_API_ANTHROPIC';
-    const SYSTEM  = "Sei un assistente che aiuta gli studenti a prepararsi per l'esame di guardia giurata. Rispondi in italiano in modo chiaro e incoraggiante.";
-    let chatHistory = [];
-    let isSending   = false;
+    const RESPONSES = [
+      { kw: ['ciao', 'salve', 'buongiorno', 'buonasera', 'hey'],
+        r: 'Ciao! 👋 Sono qui per aiutarti nella preparazione al tuo esame. Puoi chiedermi come funzionano le simulazioni, cosa studiare, quando è l\'esame o qualsiasi cosa legata al corso. Come posso aiutarti?' },
+      { kw: ['grazie', 'perfetto', 'ottimo', 'capito', 'ok'],
+        r: 'Prego! 😊 Se hai altre domande sono qui. In bocca al lupo per la preparazione!' },
+      { kw: ['corso', 'professionista', 'security', 'formazione', 'professione'],
+        r: 'Stai frequentando il corso per diventare <strong>Professionista di Security</strong>. Il percorso include la formazione teorica su normativa, procedure operative, sicurezza e gestione delle emergenze. Al termine dovrai superare l\'esame scritto che copre tutti gli argomenti del programma. 💼' },
+      { kw: ['microsimulazione', 'micro simulazione'],
+        r: 'La <strong>Microsimulazione</strong> è un test breve (~15 minuti) focalizzato su un singolo tema. Perfetta per allenarsi su un argomento specifico in cui ti senti meno sicuro/a. Usala spesso, concentrandoti ogni volta su un\'area diversa! 🎯' },
+      { kw: ['simulazione completa', 'simulazione integrale', 'test completo', 'prova completa'],
+        r: 'La <strong>Simulazione Completa</strong> replica l\'esame reale (~60 minuti, 30 domande) coprendo tutti i temi del programma. Falla almeno una volta a settimana nelle ultime settimane, per abituarti ai tempi e al formato. 📋' },
+      { kw: ['simulazione', 'funziona', 'test', 'quiz', 'esercitazione'],
+        r: 'Hai due tipi di simulazione:<br><br>• <strong>Microsimulazione</strong> (~15 min) — focalizzata su un tema, ottima per i punti deboli<br>• <strong>Simulazione Completa</strong> (~60 min, 30 domande) — replica l\'esame reale<br><br>I risultati vengono salvati automaticamente in fondo alla pagina. 📊' },
+      { kw: ['quando', 'data', 'dicembre', '03/12', '3 dicembre'],
+        r: 'Il tuo esame è fissato per il <strong>3 dicembre 2026</strong>. Il countdown in cima alla pagina ti mostra esattamente quanto manca. Usalo come motivazione per allenarti ogni giorno! ⏰' },
+      { kw: ['esame', 'prova scritta', 'scritto', 'valutazione', 'superare'],
+        r: 'L\'esame si svolge in forma <strong>scritta</strong> e copre tutti gli argomenti del programma. La tua sessione è il <strong>3 dicembre 2026</strong>. Ti consiglio almeno 2-3 simulazioni complete nelle ultime settimane e di rivedere sempre gli errori. 📝' },
+      { kw: ['cosa studiare', 'argomenti', 'materie', 'programma', 'contenuti', 'temi'],
+        r: 'Il programma del corso di Professionista di Security include:<br><br>📌 Normativa di riferimento<br>📌 Procedure operative e protocolli<br>📌 Gestione delle emergenze<br>📌 Diritti e doveri del professionista<br>📌 Sicurezza fisica e controllo accessi<br><br>Usa le microsimulazioni per approfondire i temi su cui ti senti meno sicuro/a!' },
+      { kw: ['prepararsi', 'preparo', 'studiare', 'studio', 'consigli', 'suggerimenti', 'prepara'],
+        r: 'Ecco i miei consigli per prepararti al meglio:<br><br>1️⃣ Fai una <strong>microsimulazione</strong> al giorno su un tema diverso<br>2️⃣ Una volta a settimana fai la <strong>simulazione completa</strong><br>3️⃣ Rivedi sempre le domande sbagliate<br>4️⃣ Nelle ultime settimane simula le condizioni reali<br><br>Con costanza ce la fai! 💪' },
+      { kw: ['risultati', 'punteggio', 'voto', 'passare', 'sufficienza', 'percentuale'],
+        r: 'I tuoi risultati vengono salvati dopo ogni simulazione — nella sezione <strong>I tuoi risultati</strong> in fondo alla pagina. La soglia di superamento è <strong>60%</strong>. Ogni tentativo ti avvicina all\'obiettivo! 📈' },
+      { kw: ['difficile', 'difficolta', 'paura', 'ansia', 'nervoso', 'nervosa', 'preoccupato', 'preoccupata'],
+        r: 'È normale sentirsi un po\' in ansia prima di un esame, ma sei nel posto giusto! 😊 Le simulazioni ti aiutano ad abituarti al formato e ridurre l\'incertezza. Più ti alleni, più ti sentirai sicuro/a. Ce la fai! 🌟' },
+      { kw: ['tempo', 'manca', 'giorni', 'settimane', 'quanto manca'],
+        r: 'Guarda il countdown in cima alla pagina per sapere esattamente quanto manca all\'esame del <strong>3 dicembre 2026</strong>! Ogni giorno è un\'opportunità per fare un\'altra simulazione. 🎯' }
+    ];
 
-    if (API_KEY.startsWith('INSERISCI')) document.getElementById('api-key-warning').style.display = '';
+    function norm(s) {
+      return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s\/]/g,' ');
+    }
 
+    function getResponse(input) {
+      const n = norm(input);
+      for (const rule of RESPONSES) {
+        if (rule.kw.some(k => n.includes(norm(k)))) return rule.r;
+      }
+      return 'Non ho capito bene la domanda 🤔 Prova a chiedermi:<br><br>• Come funzionano le <strong>simulazioni</strong><br>• Cosa <strong>studiare</strong> per l\'esame<br>• Come <strong>prepararsi</strong> al meglio<br>• Quando è la <strong>data dell\'esame</strong><br>• Informazioni sul <strong>corso</strong>';
+    }
+
+    let isSending = false;
     const textarea = document.getElementById('chat-input');
     textarea.addEventListener('input', () => {
       textarea.style.height = 'auto';
@@ -493,54 +520,21 @@
       return row;
     }
 
-    function escapeHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
-
-    async function sendMessage() {
+    function sendMessage() {
       const text = textarea.value.trim();
       if (!text || isSending) return;
-      if (API_KEY.startsWith('INSERISCI')) {
-        appendBubble('error', '⚠️ Configura prima la tua API key Anthropic nel file HTML.');
-        return;
-      }
       isSending = true;
       document.getElementById('chat-send').disabled = true;
       textarea.value = ''; textarea.style.height = 'auto';
-
-      appendBubble('user', escapeHtml(text));
-      chatHistory.push({ role: 'user', content: text });
+      appendBubble('user', text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
       const typing = appendTyping();
-
-      try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': API_KEY,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true'
-          },
-          body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1024, system: SYSTEM, messages: chatHistory })
-        });
+      setTimeout(() => {
         typing.remove();
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          chatHistory.pop();
-          appendBubble('error', '⚠️ ' + (err.error?.message || 'Errore API. Riprova.'));
-        } else {
-          const data = await res.json();
-          const reply = data.content[0].text;
-          chatHistory.push({ role: 'assistant', content: reply });
-          appendBubble('assistant', escapeHtml(reply));
-        }
-      } catch(e) {
-        typing.remove();
-        chatHistory.pop();
-        appendBubble('error', '⚠️ Errore di connessione. Controlla la tua API key e riprova.');
-      } finally {
+        appendBubble('assistant', getResponse(text));
         isSending = false;
         document.getElementById('chat-send').disabled = false;
         textarea.focus();
-      }
+      }, 500 + Math.random() * 300);
     }
 
     /* ── RESULTS ── */
