@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Pannello Classi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue:    #2563EB;
+      --cyan:    #0891B2;
+      --teal:    #0D9488;
+      --amber:   #D97706;
+      --red:     #DC2626;
+      --green:   #059669;
+      --violet:  #7C3AED;
+      --s50:     #F8FAFC;
+      --s100:    #F1F5F9;
+      --s200:    #E2E8F0;
+      --s300:    #CBD5E1;
+      --s400:    #94A3B8;
+      --s500:    #64748B;
+      --s700:    #334155;
+      --s800:    #1E293B;
+      --s900:    #0F172A;
+    }
+    html, body { min-height:100vh; font-family:'Inter',sans-serif; background:var(--s50); color:var(--s800); }
+
+    /* ── NAV ── */
+    .nav {
+      background: var(--s900); height: 60px;
+      display: flex; align-items: center;
+      padding: 0 32px; gap: 16px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo img { height: 36px; filter:brightness(0) invert(1); opacity:.9; }
+    .nav-sep { flex:1; }
+    .nav-badge {
+      font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+      color:#FCD34D; background:rgba(245,158,11,.15); border:1px solid rgba(245,158,11,.3);
+      padding:4px 12px; border-radius:100px;
+    }
+    .btn-logout {
+      background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.5); font-size:12px; font-weight:500;
+      padding:6px 14px; border-radius:7px; cursor:pointer; transition:background .2s,color .2s;
+    }
+    .btn-logout:hover { background:rgba(255,255,255,.13); color:#fff; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #1A0A2E 0%, #2D1B69 50%, #1E3A6E 100%);
+      padding: 48px 32px 56px; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; width:700px; height:700px; border-radius:50%;
+      background:radial-gradient(circle, rgba(124,58,237,.15) 0%, transparent 70%);
+      top:-200px; right:-100px;
+    }
+    .hero-inner { max-width:1000px; margin:0 auto; position:relative; z-index:1; }
+    .hero-tag {
+      display:inline-flex; align-items:center; gap:7px;
+      font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+      color:#C4B5FD; margin-bottom:14px;
+    }
+    .hero h1 {
+      font-family:'Plus Jakarta Sans',sans-serif;
+      font-size:32px; font-weight:800; color:#fff; letter-spacing:-0.4px; margin-bottom:8px;
+    }
+    .hero h1 span { color:#C4B5FD; }
+    .hero p { font-size:14px; color:rgba(255,255,255,.5); }
+
+    /* ── MAIN ── */
+    .main { max-width:1000px; margin:0 auto; padding:36px 32px 64px; }
+    .section-label {
+      font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      color:var(--s400); margin-bottom:20px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .section-label::after { content:''; flex:1; height:1px; background:var(--s200); }
+
+    /* ── STAT CARDS ── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:36px; }
+    .stat-card { background:#fff; border:1.5px solid var(--s200); border-radius:14px; padding:20px 22px; }
+    .stat-label { font-size:11px; font-weight:600; color:var(--s400); letter-spacing:.5px; margin-bottom:8px; }
+    .stat-value {
+      font-family:'Plus Jakarta Sans',sans-serif;
+      font-size:28px; font-weight:800; color:var(--s800); line-height:1; margin-bottom:4px;
+    }
+    .stat-sub { font-size:12px; color:var(--s400); }
+    .stat-icon {
+      float:right; width:38px; height:38px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center; margin-top:-4px;
+    }
+    .ic-blue   { background:#DBEAFE; color:var(--blue); }
+    .ic-teal   { background:#CCFBF1; color:var(--teal); }
+    .ic-violet { background:#EDE9FE; color:var(--violet); }
+    .ic-amber  { background:#FEF3C7; color:var(--amber); }
+
+    /* ── TABS ── */
+    .tabs { display:flex; gap:6px; margin-bottom:24px; }
+    .tab {
+      padding:8px 18px; border-radius:8px; border:1.5px solid var(--s200);
+      font-size:13px; font-weight:600; color:var(--s500);
+      cursor:pointer; background:#fff; transition:all .2s;
+    }
+    .tab:hover { border-color:var(--blue); color:var(--blue); }
+    .tab.active { background:var(--blue); border-color:var(--blue); color:#fff; }
+
+    /* ── TABLE ── */
+    .table-wrap { background:#fff; border:1.5px solid var(--s200); border-radius:14px; overflow:hidden; margin-bottom:36px; }
+    .table-head {
+      padding:16px 22px; border-bottom:1.5px solid var(--s100);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .table-head-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; color:var(--s800); }
+    .table-count { font-size:12px; color:var(--s400); font-weight:500; }
+    table { width:100%; border-collapse:collapse; }
+    thead tr { background:var(--s50); }
+    thead th {
+      padding:11px 20px; font-size:11px; font-weight:700; letter-spacing:1px;
+      text-transform:uppercase; color:var(--s400);
+      text-align:left; border-bottom:1.5px solid var(--s100);
+    }
+    tbody tr { border-bottom:1px solid var(--s100); transition:background .15s; }
+    tbody tr:last-child { border-bottom:none; }
+    tbody tr:hover { background:var(--s50); }
+    tbody td { padding:14px 20px; font-size:13.5px; color:var(--s700); }
+    .td-user { font-weight:600; color:var(--s800); display:flex; align-items:center; gap:10px; }
+    .user-avatar {
+      width:30px; height:30px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:700; color:#fff; flex-shrink:0;
+    }
+    .av-isp   { background:linear-gradient(135deg,var(--blue),var(--cyan)); }
+    .av-inter { background:linear-gradient(135deg,var(--teal),var(--green)); }
+    .badge-tipo {
+      display:inline-block; font-size:10px; font-weight:700;
+      letter-spacing:.8px; text-transform:uppercase; padding:3px 9px; border-radius:100px;
+    }
+    .bt-micro { background:#DBEAFE; color:var(--blue); }
+    .bt-full  { background:#EDE9FE; color:var(--violet); }
+    .badge-esito { display:inline-block; font-size:11px; font-weight:700; padding:4px 12px; border-radius:100px; }
+    .be-pass { background:#D1FAE5; color:#065F46; }
+    .be-fail { background:#FEE2E2; color:#991B1B; }
+    .td-score { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; }
+    .score-pass { color:var(--green); }
+    .score-fail { color:var(--red); }
+    .empty-row td { text-align:center; padding:36px; color:var(--s400); font-size:13.5px; }
+
+    /* ── PROGRESS ── */
+    .progress-section { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .prog-card { background:#fff; border:1.5px solid var(--s200); border-radius:14px; padding:24px; }
+    .prog-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+    .prog-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; color:var(--s800); }
+    .prog-count { font-size:12px; color:var(--s400); }
+    .prog-row { margin-bottom:14px; }
+    .prog-label { display:flex; justify-content:space-between; align-items:center; font-size:12px; margin-bottom:6px; }
+    .prog-name { font-weight:600; color:var(--s700); }
+    .prog-val  { font-weight:700; color:var(--s500); }
+    .prog-bar  { height:8px; border-radius:100px; background:var(--s100); overflow:hidden; }
+    .prog-fill { height:100%; border-radius:100px; transition:width .6s ease; }
+    .fill-pass { background:linear-gradient(90deg,var(--teal),var(--green)); }
+    .fill-fail { background:linear-gradient(90deg,#F87171,var(--red)); }
+    .fill-mid  { background:linear-gradient(90deg,var(--amber),#F59E0B); }
+    .no-data   { text-align:center; padding:32px; color:var(--s400); font-size:13px; }
+
+    @media (max-width:760px) {
+      .stats-grid { grid-template-columns:1fr 1fr; }
+      .progress-section { grid-template-columns:1fr; }
+      .main { padding:24px 16px 48px; }
+      .nav { padding:0 16px; }
+      .hero { padding:32px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-logo"><img src="logo_3a.png" alt="Logo" /></div>
+    <div class="nav-sep"></div>
+    <span class="nav-badge">Pannello Admin</span>
+    <button class="btn-logout" onclick="logout()">Esci</button>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        Controllo Avanzamento
+      </div>
+      <h1>Pannello <span>Classi</span></h1>
+      <p>Monitora i risultati delle classi ISP e Interaziendale in tempo reale.</p>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <div class="section-label">Riepilogo globale</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon ic-blue">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="stat-label">Utenti attivi</div>
+        <div class="stat-value" id="st-utenti">0</div>
+        <div class="stat-sub">hanno svolto almeno 1 test</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-teal">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h6M9 8h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
+        </div>
+        <div class="stat-label">Test completati</div>
+        <div class="stat-value" id="st-test">0</div>
+        <div class="stat-sub">totale tra tutte le classi</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-violet">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="stat-label">Media punteggio</div>
+        <div class="stat-value" id="st-media">—</div>
+        <div class="stat-sub">su tutti i test svolti</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon ic-amber">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="stat-label">Tasso superamento</div>
+        <div class="stat-value" id="st-pass">—</div>
+        <div class="stat-sub">test con punteggio ≥ 60%</div>
+      </div>
+    </div>
+
+    <div class="section-label">Risultati per classe</div>
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('all')" id="tab-all">Tutti</div>
+      <div class="tab" onclick="showTab('ISP')" id="tab-ISP">Classe ISP</div>
+      <div class="tab" onclick="showTab('Interaziendale')" id="tab-inter">Interaziendale</div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-head">
+        <div class="table-head-title">Storico test</div>
+        <div class="table-count" id="table-count">0 risultati</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Utente</th><th>Classe</th><th>Tipo</th>
+            <th>Punteggio</th><th>Risultato</th><th>Data</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="section-label">Andamento classi</div>
+    <div class="progress-section">
+      <div class="prog-card">
+        <div class="prog-header">
+          <div class="prog-title">Classe ISP</div>
+          <div class="prog-count" id="prog-isp-count">0 test</div>
+        </div>
+        <div id="prog-isp-bars"><div class="no-data">Nessun dato disponibile</div></div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-header">
+          <div class="prog-title">Interaziendale</div>
+          <div class="prog-count" id="prog-inter-count">0 test</div>
+        </div>
+        <div id="prog-inter-bars"><div class="no-data">Nessun dato disponibile</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    if (localStorage.getItem('auth_ruolo') !== 'admin') window.location.href = 'index.html';
+
+    const KNOWN_USERS = { 'isp': 'ISP', 'inter': 'Interaziendale' };
+
+    function getAllResults() {
+      const out = [];
+      Object.entries(KNOWN_USERS).forEach(([user, gruppo]) => {
+        const data = JSON.parse(localStorage.getItem('alpha_test_results_' + user) || '[]');
+        data.forEach(r => out.push({ ...r, user, gruppo }));
+      });
+      return out.sort((a, b) => b.ts - a.ts);
+    }
+
+    let currentTab = 'all';
+
+    function filtered(data) {
+      return currentTab === 'all' ? data : data.filter(r => r.gruppo === currentTab);
+    }
+
+    function renderStats(data) {
+      const total = data.length;
+      document.getElementById('st-utenti').textContent = new Set(data.map(r => r.user)).size;
+      document.getElementById('st-test').textContent   = total;
+      document.getElementById('st-media').textContent  = total ? Math.round(data.reduce((s,r) => s+r.pct, 0) / total) + '%' : '—';
+      document.getElementById('st-pass').textContent   = total ? Math.round(data.filter(r => r.pct >= 60).length / total * 100) + '%' : '—';
+    }
+
+    function renderTable(data) {
+      document.getElementById('table-count').textContent = data.length + ' risultati';
+      const tbody = document.getElementById('tbody');
+      if (!data.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Nessun risultato trovato.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.map(r => {
+        const pass = r.pct >= 60;
+        const tipo = r.tipo === 'micro' ? 'Microsimulazione' : 'Simulazione Completa';
+        const date = new Date(r.ts).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        return `<tr>
+          <td><div class="td-user"><div class="user-avatar ${r.gruppo === 'ISP' ? 'av-isp' : 'av-inter'}">${r.user.charAt(0).toUpperCase()}</div>${r.user.charAt(0).toUpperCase()+r.user.slice(1)}</div></td>
+          <td>${r.gruppo}</td>
+          <td><span class="badge-tipo ${r.tipo === 'micro' ? 'bt-micro' : 'bt-full'}">${tipo}</span></td>
+          <td><span class="td-score ${pass ? 'score-pass' : 'score-fail'}">${r.corrette}/${r.totale}</span></td>
+          <td><span class="badge-esito ${pass ? 'be-pass' : 'be-fail'}">${r.pct}% — ${pass ? 'Superato' : 'Da rifare'}</span></td>
+          <td>${date}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderProgress(all) {
+      [['isp','ISP'], ['inter','Interaziendale']].forEach(([key, gruppo]) => {
+        const data   = all.filter(r => r.gruppo === gruppo);
+        const barsEl = document.getElementById('prog-' + key + '-bars');
+        document.getElementById('prog-' + key + '-count').textContent = data.length + ' test';
+        if (!data.length) { barsEl.innerHTML = '<div class="no-data">Nessun dato disponibile</div>'; return; }
+        const byUser = {};
+        data.forEach(r => { if (!byUser[r.user]) byUser[r.user] = []; byUser[r.user].push(r); });
+        barsEl.innerHTML = Object.entries(byUser).map(([user, tests]) => {
+          const avg = Math.round(tests.reduce((s,t) => s+t.pct, 0) / tests.length);
+          const cls = avg >= 70 ? 'fill-pass' : avg >= 50 ? 'fill-mid' : 'fill-fail';
+          return `<div class="prog-row">
+            <div class="prog-label">
+              <span class="prog-name">${user.charAt(0).toUpperCase()+user.slice(1)} <small style="font-weight:400;color:var(--s400)">(${tests.length} test)</small></span>
+              <span class="prog-val">${avg}%</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill ${cls}" style="width:${avg}%"></div></div>
+          </div>`;
+        }).join('');
+      });
+    }
+
+    function render() {
+      const all  = getAllResults();
+      const data = filtered(all);
+      renderStats(data);
+      renderTable(data);
+      renderProgress(all);
+    }
+
+    function showTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      ({ all:'tab-all', ISP:'tab-ISP', Interaziendale:'tab-inter' });
+      const ids = { all:'tab-all', ISP:'tab-ISP', Interaziendale:'tab-inter' };
+      document.getElementById(ids[tab]).classList.add('active');
+      render();
+    }
+
+    function logout() {
+      ['auth_user','auth_ruolo','auth_gruppo'].forEach(k => localStorage.removeItem(k));
+      window.location.href = 'index.html';
+    }
+
+    render();
+  </script>
+</body>
+</html>
