@@ -56,7 +56,6 @@
     .tema-icon { font-size: 28px; margin-bottom: 12px; }
     .tema-select-name { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; letter-spacing: -.2px; }
     .tema-count { font-size: 12px; color: var(--text-mute); }
-    .tema-best { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; margin-top: 8px; display: inline-block; }
 
     /* ── QUIZ ── */
     #quiz-screen { display: none; }
@@ -178,7 +177,6 @@
       });
 
     function buildTemiGrid() {
-      // Categorie dinamiche dal JSON
       const temiMap = {};
       allQuestions.forEach(q => {
         if (!q.macrotema) return;
@@ -186,28 +184,13 @@
         temiMap[q.macrotema]++;
       });
 
-      // Migliori score salvati
-      const results = JSON.parse(localStorage.getItem('alpha_test_results_' + authUser) || '[]');
-      const bestByTema = {};
-      results.forEach(r => {
-        if (r.byTema) Object.entries(r.byTema).forEach(([t, d]) => {
-          const p = Math.round((d.correct / d.total) * 100);
-          if (!bestByTema[t] || p > bestByTema[t]) bestByTema[t] = p;
-        });
-      });
-
       const grid = document.getElementById('temi-grid');
       grid.innerHTML = Object.entries(temiMap).map(([tema, count]) => {
         const icon = ICONS[tema] || '📚';
-        const best = bestByTema[tema];
-        const bestHtml = best !== undefined
-          ? `<span class="tema-best" style="background:${best>=70?'rgba(16,185,129,0.12)':'rgba(239,68,68,0.10)'}; color:${best>=70?'var(--green)':'var(--red)'}">${best}% miglior score</span>`
-          : `<span class="tema-best" style="background:rgba(94,113,140,0.10); color:var(--text-muted)">Non ancora svolto</span>`;
         return `<div class="tema-select-card" onclick="startTema('${tema}')">
           <div class="tema-icon">${icon}</div>
           <div class="tema-select-name">${tema}</div>
           <div class="tema-count">${count} domande disponibili</div>
-          ${bestHtml}
         </div>`;
       }).join('');
     }
@@ -302,8 +285,6 @@
       const existing = JSON.parse(localStorage.getItem(key) || '[]');
       existing.push({ tipo: 'micro', corrette: correct, totale: answers.length, pct, ts: Date.now(), tema: currentTema });
       localStorage.setItem(key, JSON.stringify(existing));
-
-      buildTemiGrid(); // aggiorna score cards
     }
 
     function retryTema() { startTema(currentTema); }
