@@ -217,17 +217,17 @@
         <div class="stat-icon ic-blue">
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
         </div>
-        <div class="stat-label">Utenti attivi</div>
+        <div class="stat-label">Test totali</div>
         <div class="stat-value" id="st-utenti">0</div>
-        <div class="stat-sub">hanno svolto almeno 1 test</div>
+        <div class="stat-sub">registrati su Supabase</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon ic-teal">
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h6M9 8h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
         </div>
-        <div class="stat-label">Test completati</div>
+        <div class="stat-label">Per classe</div>
         <div class="stat-value" id="st-test">0</div>
-        <div class="stat-sub">totale tra tutte le classi</div>
+        <div class="stat-sub">ISP e Interaziendale</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon ic-cyan">
@@ -293,9 +293,33 @@
   <script>
     if (localStorage.getItem('auth_ruolo') !== 'admin') window.location.href = 'index.html';
 
-    const KNOWN_USERS = { 'isp': 'ISP', 'inter': 'Interaziendale' };
+    const SUPABASE_URL = 'https://athqmxqratfyxnhmhwbn.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_aVmmITMnZw0aqdxZoDNPkg_9_Cbarpn';
+    const KNOWN_USERS  = { 'isp': 'ISP', 'inter': 'Interaziendale' };
 
-    function getAllResults() {
+    // ── Supabase fetch ──────────────────────────────────────────────────
+    async function fetchFromSupabase() {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/risultati?select=*&order=data_completamento.desc', {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY
+        }
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const rows = await res.json();
+      return rows.map(r => ({
+        user:    '—',
+        gruppo:  r.gruppo === 'INTERAZIENDALE' ? 'Interaziendale' : r.gruppo,
+        tipo:    r.tipo_simulazione === 'completa' ? 'full' : 'micro',
+        corrette: r.punteggio,
+        totale:   r.totale_domande,
+        pct:      Math.round((r.punteggio / r.totale_domande) * 100),
+        ts:       new Date(r.data_completamento).getTime()
+      }));
+    }
+
+    // ── localStorage fallback ───────────────────────────────────────────
+    function getAllResultsLocal() {
       const out = [];
       Object.entries(KNOWN_USERS).forEach(([user, gruppo]) => {
         const data = JSON.parse(localStorage.getItem('alpha_test_results_' + user) || '[]');
@@ -305,15 +329,19 @@
     }
 
     let currentTab = 'all';
+    let allData    = [];
 
-    function filtered(data) {
-      return currentTab === 'all' ? data : data.filter(r => r.gruppo === currentTab);
+    function filtered() {
+      return currentTab === 'all' ? allData : allData.filter(r => r.gruppo === currentTab);
     }
 
+    // ── Render helpers ──────────────────────────────────────────────────
     function renderStats(data) {
       const total = data.length;
-      document.getElementById('st-utenti').textContent = new Set(data.map(r => r.user)).size;
-      document.getElementById('st-test').textContent   = total;
+      const ispData   = data.filter(r => r.gruppo === 'ISP');
+      const interData = data.filter(r => r.gruppo === 'Interaziendale');
+      document.getElementById('st-utenti').textContent = total;
+      document.getElementById('st-test').textContent   = ispData.length + ' ISP · ' + interData.length + ' Inter';
       document.getElementById('st-media').textContent  = total ? Math.round(data.reduce((s,r) => s+r.pct, 0) / total) + '%' : '—';
       document.getElementById('st-pass').textContent   = total ? Math.round(data.filter(r => r.pct >= 60).length / total * 100) + '%' : '—';
     }
@@ -329,8 +357,11 @@
         const pass = r.pct >= 60;
         const tipo = r.tipo === 'micro' ? 'Microsimulazione' : 'Simulazione Completa';
         const date = new Date(r.ts).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        const avLetter = r.user === '—' ? r.gruppo.charAt(0) : r.user.charAt(0).toUpperCase();
+        const avClass  = r.gruppo === 'ISP' ? 'av-isp' : 'av-inter';
+        const label    = r.user === '—' ? '<span style="color:var(--s400);font-weight:400">anonimo</span>' : r.user.charAt(0).toUpperCase()+r.user.slice(1);
         return `<tr>
-          <td><div class="td-user"><div class="user-avatar ${r.gruppo === 'ISP' ? 'av-isp' : 'av-inter'}">${r.user.charAt(0).toUpperCase()}</div>${r.user.charAt(0).toUpperCase()+r.user.slice(1)}</div></td>
+          <td><div class="td-user"><div class="user-avatar ${avClass}">${avLetter}</div>${label}</div></td>
           <td>${r.gruppo}</td>
           <td><span class="badge-tipo ${r.tipo === 'micro' ? 'bt-micro' : 'bt-full'}">${tipo}</span></td>
           <td><span class="td-score ${pass ? 'score-pass' : 'score-fail'}">${r.corrette}/${r.totale}</span></td>
@@ -341,19 +372,23 @@
     }
 
     function renderProgress(all) {
-      [['isp','ISP'], ['inter','Interaziendale']].forEach(([key, gruppo]) => {
-        const data   = all.filter(r => r.gruppo === gruppo);
+      [['isp', 'ISP'], ['inter', 'Interaziendale']].forEach(([key, gruppo]) => {
+        const classeData = all.filter(r => r.gruppo === gruppo);
         const barsEl = document.getElementById('prog-' + key + '-bars');
-        document.getElementById('prog-' + key + '-count').textContent = data.length + ' test';
-        if (!data.length) { barsEl.innerHTML = '<div class="no-data">Nessun dato disponibile</div>'; return; }
-        const byUser = {};
-        data.forEach(r => { if (!byUser[r.user]) byUser[r.user] = []; byUser[r.user].push(r); });
-        barsEl.innerHTML = Object.entries(byUser).map(([user, tests]) => {
-          const avg = Math.round(tests.reduce((s,t) => s+t.pct, 0) / tests.length);
+        document.getElementById('prog-' + key + '-count').textContent = classeData.length + ' test';
+        if (!classeData.length) { barsEl.innerHTML = '<div class="no-data">Nessun dato disponibile</div>'; return; }
+        const byTipo = {};
+        classeData.forEach(r => {
+          const label = r.tipo === 'micro' ? 'Microsimulazione' : 'Simulazione completa';
+          if (!byTipo[label]) byTipo[label] = [];
+          byTipo[label].push(r.pct);
+        });
+        barsEl.innerHTML = Object.entries(byTipo).map(([label, pcts]) => {
+          const avg = Math.round(pcts.reduce((s, v) => s + v, 0) / pcts.length);
           const cls = avg >= 70 ? 'fill-pass' : avg >= 50 ? 'fill-mid' : 'fill-fail';
           return `<div class="prog-row">
             <div class="prog-label">
-              <span class="prog-name">${user.charAt(0).toUpperCase()+user.slice(1)} <small style="font-weight:400;color:var(--s400)">(${tests.length} test)</small></span>
+              <span class="prog-name">${label} <small style="font-weight:400;color:var(--s400)">(${pcts.length} test)</small></span>
               <span class="prog-val">${avg}%</span>
             </div>
             <div class="prog-bar"><div class="prog-fill ${cls}" style="width:${avg}%"></div></div>
@@ -362,12 +397,21 @@
       });
     }
 
-    function render() {
-      const all  = getAllResults();
-      const data = filtered(all);
+    function doRender() {
+      const data = filtered();
       renderStats(data);
       renderTable(data);
-      renderProgress(all);
+      renderProgress(allData);
+    }
+
+    async function render() {
+      try {
+        allData = await fetchFromSupabase();
+      } catch (e) {
+        console.warn('Supabase non disponibile, uso localStorage:', e);
+        allData = getAllResultsLocal();
+      }
+      doRender();
     }
 
     function showTab(tab) {
@@ -375,7 +419,7 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       const ids = { all:'tab-all', ISP:'tab-ISP', Interaziendale:'tab-inter' };
       document.getElementById(ids[tab]).classList.add('active');
-      render();
+      doRender();
     }
 
     function logout() {
