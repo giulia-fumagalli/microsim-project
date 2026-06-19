@@ -157,6 +157,8 @@
 
     const authUser  = localStorage.getItem('auth_user')  || '';
     const authGruppo = localStorage.getItem('auth_gruppo') || '';
+    const SUPABASE_URL = 'https://athqmxqratfyxnhmhwbn.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_aVmmITMnZw0aqdxZoDNPkg_9_Cbarpn';
     const dashUrl   = authGruppo === 'ISP' ? 'dashboard-isp.html' : authGruppo === 'Interaziendale' ? 'dashboard-inter.html' : 'index.html';
 
     document.getElementById('back-link').href = dashUrl;
@@ -285,6 +287,20 @@
       const existing = JSON.parse(localStorage.getItem(key) || '[]');
       existing.push({ tipo: 'micro', corrette: correct, totale: answers.length, pct, ts: Date.now(), tema: currentTema });
       localStorage.setItem(key, JSON.stringify(existing));
+      sendToSupabase((authGruppo || 'ISP').toUpperCase(), 'micro', currentTema, correct, answers.length);
+    }
+
+    function sendToSupabase(gruppo, tipo, macrotema, punteggio, totale) {
+      fetch(SUPABASE_URL + '/rest/v1/risultati', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ gruppo, tipo_simulazione: tipo, macrotema: macrotema || null, punteggio, totale_domande: totale })
+      }).catch(e => console.warn('Supabase sync failed:', e));
     }
 
     function retryTema() { startTema(currentTema); }
