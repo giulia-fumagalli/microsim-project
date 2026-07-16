@@ -382,8 +382,13 @@
     .metodo-img-wrap {
       background: #fff; border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden;
       box-shadow: 0 2px 12px rgba(26,86,219,.07);
+      display: flex; flex-direction: column;
     }
-    .metodo-img-wrap img { width: 100%; display: block; }
+    .metodo-img-body {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 24px 20px;
+    }
+    .metodo-img-wrap img { width: 100%; max-width: 480px; display: block; margin: 0 auto; }
     .metodo-img-caption {
       padding: 10px 14px; font-size: 11px; font-weight: 600;
       color: var(--text-dim); text-align: center; border-top: 1px solid var(--border-soft);
@@ -660,11 +665,15 @@
 
       <div class="metodo-images">
         <div class="metodo-img-wrap">
-          <img src="matrice-rischio.png" alt="Matrice del rischio" loading="lazy">
+          <div class="metodo-img-body">
+            <img src="matrice-rischio.png" alt="Matrice del rischio" loading="lazy">
+          </div>
           <div class="metodo-img-caption">Esempio: Matrice del rischio</div>
         </div>
         <div class="metodo-img-wrap">
-          <img src="matrice-valutazione.png" alt="Valutazione del rischio" loading="lazy">
+          <div class="metodo-img-body">
+            <img src="matrice-valutazione.png" alt="Valutazione del rischio" loading="lazy">
+          </div>
           <div class="metodo-img-caption">Esempio: Valutazione del rischio</div>
         </div>
       </div>
