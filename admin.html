@@ -148,8 +148,9 @@
       display:flex; align-items:center; justify-content:center;
       font-size:12px; font-weight:700; color:#fff; flex-shrink:0;
     }
-    .av-isp   { background:linear-gradient(135deg,var(--blue),var(--cyan)); }
-    .av-inter { background:linear-gradient(135deg,var(--teal),var(--green)); }
+    .av-isp    { background:linear-gradient(135deg,var(--blue),var(--cyan)); }
+    .av-inter  { background:linear-gradient(135deg,var(--teal),var(--green)); }
+    .av-isp128 { background:linear-gradient(135deg,var(--amber),#F59E0B); }
     .badge-tipo {
       display:inline-block; font-size:10px; font-weight:700;
       letter-spacing:.8px; text-transform:uppercase; padding:3px 9px; border-radius:100px;
@@ -164,7 +165,7 @@
     .score-fail { color:var(--red); }
     .empty-row td { text-align:center; padding:36px; color:var(--s400); font-size:13.5px; }
 
-    .progress-section { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .progress-section { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
     .prog-card { background:#fff; border:1.5px solid var(--border); border-radius:16px; padding:24px; box-shadow:0 2px 8px rgba(26,86,219,.06); }
     .prog-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
     .prog-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:700; color:var(--s800); }
@@ -180,6 +181,9 @@
     .fill-mid  { background:linear-gradient(90deg,var(--amber),#F59E0B); }
     .no-data   { text-align:center; padding:32px; color:var(--s400); font-size:13px; }
 
+    @media (max-width:1000px) {
+      .progress-section { grid-template-columns:1fr 1fr; }
+    }
     @media (max-width:760px) {
       .stats-grid { grid-template-columns:1fr 1fr; }
       .progress-section { grid-template-columns:1fr; }
@@ -227,7 +231,7 @@
         </div>
         <div class="stat-label">Per classe</div>
         <div class="stat-value" id="st-test">0</div>
-        <div class="stat-sub">ISP e Interaziendale</div>
+        <div class="stat-sub">ISP, Interaziendale e ISP128</div>
       </div>
       <div class="stat-card">
         <div class="stat-icon ic-cyan">
@@ -252,6 +256,7 @@
       <div class="tab active" onclick="showTab('all')" id="tab-all">Tutti</div>
       <div class="tab" onclick="showTab('ISP')" id="tab-ISP">Classe ISP</div>
       <div class="tab" onclick="showTab('Interaziendale')" id="tab-inter">Interaziendale</div>
+      <div class="tab" onclick="showTab('ISP128')" id="tab-isp128">Classe ISP128</div>
     </div>
 
     <div class="table-wrap">
@@ -286,6 +291,13 @@
         </div>
         <div id="prog-inter-bars"><div class="no-data">Nessun dato disponibile</div></div>
       </div>
+      <div class="prog-card">
+        <div class="prog-header">
+          <div class="prog-title">Classe ISP128</div>
+          <div class="prog-count" id="prog-isp128-count">0 test</div>
+        </div>
+        <div id="prog-isp128-bars"><div class="no-data">Nessun dato disponibile</div></div>
+      </div>
     </div>
 
   </div>
@@ -295,7 +307,8 @@
 
     const SUPABASE_URL = 'https://athqmxqratfyxnhmhwbn.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_aVmmITMnZw0aqdxZoDNPkg_9_Cbarpn';
-    const KNOWN_USERS = { 'isp': 'ISP', 'inter': 'Interaziendale' };
+    const KNOWN_USERS = { 'isp': 'ISP', 'inter': 'Interaziendale', 'isp128': 'ISP128' };
+    const GROUP_TO_USER = { 'ISP': 'isp', 'Interaziendale': 'inter', 'ISP128': 'isp128' };
 
     // ── Supabase fetch ──────────────────────────────────────────────────
     async function fetchFromSupabase() {
@@ -308,7 +321,7 @@
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const rows = await res.json();
       return rows.map(r => ({
-        user:     r.gruppo === 'ISP' ? 'isp' : 'inter',
+        user:     GROUP_TO_USER[r.gruppo] || 'inter',
         gruppo:   r.gruppo || '—',
         tipo:     r.tipo_simulazione === 'micro' ? 'micro' : 'full',
         corrette: r.punteggio,
@@ -339,10 +352,11 @@
     // ── Render helpers ──────────────────────────────────────────────────
     function renderStats(data) {
       const total = data.length;
-      const ispData   = data.filter(r => r.gruppo === 'ISP');
-      const interData = data.filter(r => r.gruppo === 'Interaziendale');
+      const ispData    = data.filter(r => r.gruppo === 'ISP');
+      const interData  = data.filter(r => r.gruppo === 'Interaziendale');
+      const isp128Data = data.filter(r => r.gruppo === 'ISP128');
       document.getElementById('st-utenti').textContent = total;
-      document.getElementById('st-test').textContent   = ispData.length + ' ISP · ' + interData.length + ' Inter';
+      document.getElementById('st-test').textContent   = ispData.length + ' ISP · ' + interData.length + ' Inter · ' + isp128Data.length + ' ISP128';
       document.getElementById('st-media').textContent  = total ? Math.round(data.reduce((s,r) => s+r.pct, 0) / total) + '%' : '—';
       document.getElementById('st-pass').textContent   = total ? Math.round(data.filter(r => r.pct >= 60).length / total * 100) + '%' : '—';
     }
@@ -359,7 +373,7 @@
         const tipo = r.tipo === 'micro' ? 'Microsimulazione' : 'Simulazione Completa';
         const date = new Date(r.ts).toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
         const avLetter = r.user === '—' ? r.gruppo.charAt(0) : r.user.charAt(0).toUpperCase();
-        const avClass  = r.gruppo === 'ISP' ? 'av-isp' : 'av-inter';
+        const avClass  = r.gruppo === 'ISP' ? 'av-isp' : r.gruppo === 'ISP128' ? 'av-isp128' : 'av-inter';
         const label    = r.user === '—' ? '<span style="color:var(--s400);font-weight:400">anonimo</span>' : r.user.charAt(0).toUpperCase()+r.user.slice(1);
         return `<tr>
           <td><div class="td-user"><div class="user-avatar ${avClass}">${avLetter}</div>${label}</div></td>
@@ -373,7 +387,7 @@
     }
 
     function renderProgress(all) {
-      [['isp', 'ISP'], ['inter', 'Interaziendale']].forEach(([key, gruppo]) => {
+      [['isp', 'ISP'], ['inter', 'Interaziendale'], ['isp128', 'ISP128']].forEach(([key, gruppo]) => {
         const classeData = all.filter(r => r.gruppo === gruppo);
         const barsEl = document.getElementById('prog-' + key + '-bars');
         document.getElementById('prog-' + key + '-count').textContent = classeData.length + ' test';
@@ -418,7 +432,7 @@
     function showTab(tab) {
       currentTab = tab;
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      const ids = { all:'tab-all', ISP:'tab-ISP', Interaziendale:'tab-inter' };
+      const ids = { all:'tab-all', ISP:'tab-ISP', Interaziendale:'tab-inter', ISP128:'tab-isp128' };
       document.getElementById(ids[tab]).classList.add('active');
       doRender();
     }

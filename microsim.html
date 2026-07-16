@@ -161,7 +161,7 @@
 
     const authUser   = localStorage.getItem('auth_user')  || '';
     const authGruppo = localStorage.getItem('auth_gruppo') || '';
-    const dashUrl    = authGruppo === 'ISP' ? 'dashboard-isp.html' : authGruppo === 'Interaziendale' ? 'dashboard-inter.html' : 'index.html';
+    const dashUrl    = authGruppo === 'ISP' ? 'dashboard-isp.html' : authGruppo === 'Interaziendale' ? 'dashboard-inter.html' : authGruppo === 'ISP128' ? 'dashboard-isp128.html' : 'index.html';
     document.getElementById('back-link').href = dashUrl;
 
     const ICONS = {

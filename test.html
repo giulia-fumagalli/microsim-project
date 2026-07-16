@@ -175,7 +175,7 @@
     const gruppo    = localStorage.getItem('auth_gruppo') || '';
     const SUPABASE_URL = 'https://athqmxqratfyxnhmhwbn.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_aVmmITMnZw0aqdxZoDNPkg_9_Cbarpn';
-    const dashUrl   = gruppo === 'ISP' ? 'dashboard-isp.html' : gruppo === 'Interaziendale' ? 'dashboard-inter.html' : 'index.html';
+    const dashUrl   = gruppo === 'ISP' ? 'dashboard-isp.html' : gruppo === 'Interaziendale' ? 'dashboard-inter.html' : gruppo === 'ISP128' ? 'dashboard-isp128.html' : 'index.html';
     document.getElementById('gruppo-badge').textContent = gruppo || 'Simulazione';
     document.getElementById('back-link').href = dashUrl;
     let allQuestions = [], testQuestions = [], currentIndex = 0, answers = [];
