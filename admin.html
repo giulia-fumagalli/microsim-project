@@ -44,11 +44,7 @@
       border-bottom: 1px solid var(--border);
       position: sticky; top: 0; z-index: 200;
     }
-    .nav-school {
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 700;
-      color: var(--s800); letter-spacing: -.1px; white-space: nowrap;
-    }
-    .nav-school span { font-weight: 400; color: var(--s500); }
+    .nav-logo { height: 32px; width: auto; display: block; }
     .nav-sep { flex:1; }
     .nav-badge {
       font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
@@ -204,7 +200,7 @@
 <body>
 
   <nav class="nav">
-    <div class="nav-school"><strong>Scuola Internazionale</strong> <span>Etica &amp; Sicurezza</span></div>
+    <img src="logo_sies.png" alt="Scuola Internazionale Etica &amp; Sicurezza" class="nav-logo">
     <div class="nav-sep"></div>
     <span class="nav-badge">Pannello Admin</span>
     <button class="btn-logout" onclick="logout()">Esci</button>
