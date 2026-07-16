@@ -131,7 +131,7 @@
 
     /* ── MAIN GRID ── */
     .main-grid {
-      display: grid; grid-template-columns: 1fr 1fr 360px;
+      display: grid; grid-template-columns: 1fr 1fr;
       gap: 20px; max-width: 1400px; margin: 0 auto; padding: 28px 32px;
     }
     .col-header {
@@ -235,78 +235,6 @@
       box-shadow: 0 4px 18px rgba(8,145,178,.32);
     }
     .card-full .btn-sim:hover { box-shadow: 0 6px 26px rgba(8,145,178,.42); }
-
-    /* ── CHAT PANEL ── */
-    .chat-col { display: flex; flex-direction: column; }
-    .chat-panel {
-      flex: 1; display: flex; flex-direction: column;
-      background: var(--card); border: 1px solid var(--border);
-      border-left: 2px solid rgba(26,86,219,.45);
-      border-radius: 20px; overflow: hidden;
-      box-shadow: 0 4px 28px rgba(26,86,219,.07);
-    }
-    .chat-head {
-      background: linear-gradient(135deg, rgba(26,86,219,.07) 0%, rgba(8,145,178,.05) 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 18px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-    }
-    .chat-head-icon {
-      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 12px var(--glow);
-    }
-    .chat-head h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
-    .chat-online {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: var(--emerald); box-shadow: 0 0 6px var(--emerald); margin-left: auto;
-    }
-    .chat-msgs {
-      flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px;
-      scroll-behavior: smooth;
-    }
-    .bubble-row { display: flex; gap: 8px; align-items: flex-end; }
-    .bubble-row.user { flex-direction: row-reverse; }
-    .bubble-av {
-      width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700;
-    }
-    .bubble-row.assistant .bubble-av { background: linear-gradient(135deg, var(--blue), var(--cyan)); color: #fff; }
-    .bubble-row.user .bubble-av { background: var(--card-alt); color: var(--text-dim); border: 1px solid var(--border); }
-    .bubble-txt {
-      max-width: 84%; padding: 9px 13px; border-radius: 12px; font-size: 12.5px; line-height: 1.55;
-    }
-    .bubble-row.assistant .bubble-txt { background: var(--card-alt); color: var(--text); border: 1px solid var(--border-soft); border-bottom-left-radius: 4px; }
-    .bubble-row.user .bubble-txt { background: linear-gradient(135deg, var(--blue), var(--cyan)); color: #fff; border-bottom-right-radius: 4px; }
-    .bubble-row.error .bubble-txt { background: rgba(239,68,68,.08); color: #b91c1c; border: 1px solid rgba(239,68,68,.2); border-radius: 10px; }
-
-    .typing-dots { display: flex; gap: 4px; align-items: center; padding: 3px 2px; }
-    .typing-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--text-dim); animation: blink 1.2s infinite; }
-    .typing-dots span:nth-child(2) { animation-delay: .2s; }
-    .typing-dots span:nth-child(3) { animation-delay: .4s; }
-    @keyframes blink { 0%,80%,100% { opacity:.2; transform: scale(.8); } 40% { opacity:1; transform: scale(1); } }
-
-    .chat-foot {
-      border-top: 1px solid var(--border); padding: 12px;
-      display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
-      background: var(--card-alt);
-    }
-    #chat-input {
-      flex: 1; background: #fff; border: 1px solid var(--border); border-radius: 10px;
-      padding: 9px 12px; font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text);
-      resize: none; max-height: 100px; outline: none; line-height: 1.5;
-      transition: border-color .2s;
-    }
-    #chat-input:focus { border-color: var(--blue-lt); box-shadow: 0 0 12px rgba(26,86,219,.12); }
-    #chat-input::placeholder { color: var(--text-mute); }
-    #chat-send {
-      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0; border: none; cursor: pointer;
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
-      display: flex; align-items: center; justify-content: center; color: #fff;
-      box-shadow: 0 4px 16px rgba(26,86,219,.32); transition: opacity .2s, transform .15s, box-shadow .2s;
-    }
-    #chat-send:disabled { opacity: .35; cursor: default; box-shadow: none; }
-    #chat-send:hover:not(:disabled) { transform: scale(1.06); box-shadow: 0 6px 22px rgba(26,86,219,.42); }
 
     /* ── IL METODO ── */
     .metodo-section {
@@ -423,11 +351,6 @@
     .score-total-label { font-size: 14px; font-weight: 700; color: #fff; }
     .score-total-pts { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 20px; font-weight: 800; color: #fff; }
 
-    @media (max-width: 1100px) {
-      .main-grid { grid-template-columns: 1fr 1fr; }
-      .chat-col { grid-column: 1 / -1; }
-      .chat-panel { max-height: 420px; }
-    }
     @media (max-width: 700px) {
       .main-grid { grid-template-columns: 1fr; padding: 16px; gap: 14px; }
       .hero-content { padding: 32px 16px 24px; }
@@ -461,7 +384,7 @@
             Classe Interaziendale — Professionista di Security
           </div>
           <h1>Ciao! Ogni simulazione<br/>ti avvicina al <em>successo</em> ✨</h1>
-          <p>Scegli il tipo di simulazione o chiedi aiuto al tuo assistente virtuale.</p>
+          <p>Scegli il tipo di simulazione più adatta alla tua preparazione.</p>
         </div>
         <div class="hero-countdown">
           <div class="cd-grid">
@@ -548,32 +471,6 @@
           </span>
         </div>
       </a>
-    </div>
-
-    <!-- ASSISTENTE VIRTUALE -->
-    <div class="chat-col">
-      <div class="col-header">Assistente Virtuale</div>
-      <div class="chat-panel">
-        <div class="chat-head">
-          <div class="chat-head-icon">
-            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2z"/><path d="M12 16v-4M12 8h.01"/></svg>
-          </div>
-          <div><h3>Assistente Virtuale</h3></div>
-          <div class="chat-online"></div>
-        </div>
-        <div class="chat-msgs" id="chat-messages">
-          <div class="bubble-row assistant">
-            <div class="bubble-av">AI</div>
-            <div class="bubble-txt">Ciao! Sono il tuo assistente virtuale per la preparazione all'esame da Professionista di Security. Chiedimi pure su qualsiasi argomento: normativa, procedure, gestione del rischio e molto altro. Sono qui per aiutarti! 💪</div>
-          </div>
-        </div>
-        <div class="chat-foot">
-          <textarea id="chat-input" rows="1" placeholder="Fai una domanda..." onkeydown="handleKey(event)"></textarea>
-          <button id="chat-send" onclick="sendMessage()">
-            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
-          </button>
-        </div>
-      </div>
     </div>
 
   </div>
@@ -734,97 +631,6 @@
       document.getElementById('cd-secs').textContent  = pad(Math.floor((diff % 60000) / 1000));
     }
     updateCountdown(); setInterval(updateCountdown, 1000);
-
-    /* ── CHAT ── */
-    const RESPONSES = [
-      { kw: ['ciao', 'salve', 'buongiorno', 'buonasera', 'hey'],
-        r: 'Ciao! 👋 Sono qui per aiutarti nella preparazione al tuo esame. Puoi chiedermi come funzionano le simulazioni, cosa studiare, quando è l\'esame o qualsiasi cosa legata al corso. Come posso aiutarti?' },
-      { kw: ['grazie', 'perfetto', 'ottimo', 'capito', 'ok'],
-        r: 'Prego! 😊 Se hai altre domande sono qui. In bocca al lupo per la preparazione!' },
-      { kw: ['corso', 'professionista', 'security', 'formazione', 'professione'],
-        r: 'Stai frequentando il corso per diventare <strong>Professionista di Security</strong>. Il percorso include la formazione teorica su normativa, procedure operative, sicurezza e gestione delle emergenze. Al termine dovrai superare l\'esame scritto che copre tutti gli argomenti del programma. 💼' },
-      { kw: ['microsimulazione', 'micro simulazione'],
-        r: 'La <strong>Microsimulazione</strong> è un test breve (~15 minuti) focalizzato su un singolo tema. Perfetta per allenarsi su un argomento specifico in cui ti senti meno sicuro/a. Usala spesso, concentrandoti ogni volta su un\'area diversa! 🎯' },
-      { kw: ['simulazione completa', 'simulazione integrale', 'test completo', 'prova completa'],
-        r: 'La <strong>Simulazione Completa</strong> replica l\'esame reale (~60 minuti, 30 domande) coprendo tutti i temi del programma. Falla almeno una volta a settimana nelle ultime settimane, per abituarti ai tempi e al formato. 📋' },
-      { kw: ['simulazione', 'funziona', 'test', 'quiz', 'esercitazione'],
-        r: 'Hai due tipi di simulazione:<br><br>• <strong>Microsimulazione</strong> (~15 min) — focalizzata su un tema<br>• <strong>Simulazione Completa</strong> (~60 min, 30 domande) — esame reale<br><br>I risultati vengono salvati automaticamente in fondo alla pagina. 📊' },
-      { kw: ['quando', 'data', 'novembre', '26/11', '26 novembre'],
-        r: 'Il tuo esame è fissato per il <strong>26 novembre 2026</strong>. Il countdown in cima alla pagina ti mostra esattamente quanto manca! ⏰' },
-      { kw: ['esame', 'prova scritta', 'scritto', 'valutazione', 'superare'],
-        r: 'L\'esame si svolge in forma <strong>scritta</strong> e copre tutti gli argomenti del programma. La tua sessione è il <strong>26 novembre 2026</strong>. Ti consiglio almeno 2-3 simulazioni complete nelle ultime settimane. 📝' },
-      { kw: ['cosa studiare', 'argomenti', 'materie', 'programma', 'contenuti', 'temi'],
-        r: 'Il programma del corso di Professionista di Security include:<br><br>📌 Normativa di riferimento<br>📌 Procedure operative e protocolli<br>📌 Gestione delle emergenze<br>📌 Diritti e doveri del professionista<br>📌 Sicurezza fisica e controllo accessi' },
-      { kw: ['prepararsi', 'preparo', 'studiare', 'studio', 'consigli', 'suggerimenti', 'prepara'],
-        r: 'Ecco i miei consigli:<br><br>1️⃣ <strong>Microsimulazione</strong> al giorno su un tema diverso<br>2️⃣ <strong>Simulazione completa</strong> una volta a settimana<br>3️⃣ Rivedi sempre le domande sbagliate<br>4️⃣ Simula le condizioni reali nelle ultime settimane<br><br>Con costanza ce la fai! 💪' },
-      { kw: ['risultati', 'punteggio', 'voto', 'passare', 'sufficienza', 'percentuale'],
-        r: 'I risultati vengono salvati dopo ogni simulazione — nella sezione <strong>Progressi</strong> in fondo alla pagina. La soglia di superamento è <strong>60%</strong>. 📈' },
-      { kw: ['difficile', 'difficolta', 'paura', 'ansia', 'nervoso', 'nervosa', 'preoccupato', 'preoccupata'],
-        r: 'È normale sentirsi in ansia, ma sei nel posto giusto! 😊 Le simulazioni ti aiutano ad abituarti al formato. Più ti alleni, più ti sentirai sicuro/a il giorno dell\'esame. Ce la fai! 🌟' },
-      { kw: ['tempo', 'manca', 'giorni', 'settimane', 'quanto manca'],
-        r: 'Il countdown in cima alla pagina ti mostra esattamente quanto manca all\'esame del <strong>26 novembre 2026</strong>! Ogni giorno è un\'opportunità. 🎯' }
-    ];
-
-    function norm(s) {
-      return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9\s\/]/g,' ');
-    }
-    function getResponse(input) {
-      const n = norm(input);
-      for (const rule of RESPONSES) {
-        if (rule.kw.some(k => n.includes(norm(k)))) return rule.r;
-      }
-      return 'Non ho capito bene 🤔 Prova a chiedermi:<br>• Come funzionano le <strong>simulazioni</strong><br>• Cosa <strong>studiare</strong><br>• Come <strong>prepararsi</strong><br>• La <strong>data dell\'esame</strong>';
-    }
-
-    let isSending = false;
-    const textarea = document.getElementById('chat-input');
-    textarea.addEventListener('input', () => {
-      textarea.style.height = 'auto';
-      textarea.style.height = Math.min(textarea.scrollHeight, 100) + 'px';
-    });
-    function handleKey(e) {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-    }
-    function appendBubble(role, html) {
-      const msgs = document.getElementById('chat-messages');
-      const row = document.createElement('div');
-      row.className = 'bubble-row ' + role;
-      const av = document.createElement('div');
-      av.className = 'bubble-av';
-      av.textContent = role === 'user' ? (authUser ? authUser.charAt(0).toUpperCase() : 'U') : 'AI';
-      const bub = document.createElement('div');
-      bub.className = 'bubble-txt';
-      bub.innerHTML = html;
-      row.appendChild(av); row.appendChild(bub);
-      msgs.appendChild(row);
-      msgs.scrollTop = msgs.scrollHeight;
-      return row;
-    }
-    function appendTyping() {
-      const msgs = document.getElementById('chat-messages');
-      const row = document.createElement('div');
-      row.className = 'bubble-row assistant';
-      row.innerHTML = '<div class="bubble-av">AI</div><div class="bubble-txt"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
-      msgs.appendChild(row);
-      msgs.scrollTop = msgs.scrollHeight;
-      return row;
-    }
-    function sendMessage() {
-      const text = textarea.value.trim();
-      if (!text || isSending) return;
-      isSending = true;
-      document.getElementById('chat-send').disabled = true;
-      textarea.value = ''; textarea.style.height = 'auto';
-      appendBubble('user', text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-      const typing = appendTyping();
-      setTimeout(() => {
-        typing.remove();
-        appendBubble('assistant', getResponse(text));
-        isSending = false;
-        document.getElementById('chat-send').disabled = false;
-        textarea.focus();
-      }, 500 + Math.random() * 300);
-    }
 
     /* ── IL METODO: fade-in allo scroll ── */
     const stepObserver = new IntersectionObserver((entries) => {
