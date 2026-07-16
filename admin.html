@@ -106,6 +106,14 @@
       font-size:28px; font-weight:800; color:var(--s800); line-height:1; margin-bottom:4px;
     }
     .stat-sub { font-size:12px; color:var(--s400); }
+    .stat-class-rows { display:flex; flex-direction:column; gap:2px; margin-top:2px; }
+    .stat-class-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:7px 0; border-bottom:1px solid var(--border-soft);
+    }
+    .stat-class-row:last-child { border-bottom:none; }
+    .stat-class-name { font-size:12.5px; font-weight:600; color:var(--s700); }
+    .stat-class-count { font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; font-weight:800; color:var(--s800); }
     .stat-icon {
       float:right; width:38px; height:38px; border-radius:10px;
       display:flex; align-items:center; justify-content:center; margin-top:-4px;
@@ -209,7 +217,7 @@
         Controllo Avanzamento
       </div>
       <h1>Pannello <span>Classi</span></h1>
-      <p>Monitora i risultati delle classi ISP e Interaziendale in tempo reale.</p>
+      <p>Monitora i risultati delle classi ISP, ISP128 e Interaziendale in tempo reale.</p>
     </div>
   </div>
 
@@ -230,8 +238,11 @@
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6M9 16h6M9 8h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
         </div>
         <div class="stat-label">Per classe</div>
-        <div class="stat-value" id="st-test">0</div>
-        <div class="stat-sub">ISP, Interaziendale e ISP128</div>
+        <div class="stat-class-rows">
+          <div class="stat-class-row"><span class="stat-class-name">ISP</span><span class="stat-class-count" id="st-test-isp">0</span></div>
+          <div class="stat-class-row"><span class="stat-class-name">ISP128</span><span class="stat-class-count" id="st-test-isp128">0</span></div>
+          <div class="stat-class-row"><span class="stat-class-name">Interaziendale</span><span class="stat-class-count" id="st-test-inter">0</span></div>
+        </div>
       </div>
       <div class="stat-card">
         <div class="stat-icon ic-cyan">
@@ -356,7 +367,9 @@
       const interData  = data.filter(r => r.gruppo === 'Interaziendale');
       const isp128Data = data.filter(r => r.gruppo === 'ISP128');
       document.getElementById('st-utenti').textContent = total;
-      document.getElementById('st-test').textContent   = ispData.length + ' ISP · ' + interData.length + ' Inter · ' + isp128Data.length + ' ISP128';
+      document.getElementById('st-test-isp').textContent    = ispData.length;
+      document.getElementById('st-test-isp128').textContent = isp128Data.length;
+      document.getElementById('st-test-inter').textContent  = interData.length;
       document.getElementById('st-media').textContent  = total ? Math.round(data.reduce((s,r) => s+r.pct, 0) / total) + '%' : '—';
       document.getElementById('st-pass').textContent   = total ? Math.round(data.filter(r => r.pct >= 60).length / total * 100) + '%' : '—';
     }
