@@ -97,16 +97,6 @@
     .btn-retry:hover { opacity: .9; }
     .btn-back { padding: 14px 36px; background: transparent; color: var(--text); border: 1.5px solid var(--border); border-radius: 10px; font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: all .2s; }
     .btn-back:hover { border-color: var(--blue); color: var(--blue); }
-    /* ── EXPLANATION BANNER ── */
-    .explanation-banner { border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; display: flex; gap: 14px; align-items: flex-start; animation: expl-in .3s ease; }
-    .explanation-banner.correct { background: rgba(16,185,129,.10); border: 1.5px solid var(--emerald); }
-    .explanation-banner.wrong   { background: rgba(239,68,68,.07);  border: 1.5px solid var(--red); }
-    .expl-icon  { font-size: 22px; flex-shrink: 0; line-height: 1.2; }
-    .expl-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
-    .expl-label.correct { color: var(--emerald); }
-    .expl-label.wrong   { color: var(--red); }
-    .expl-body  { font-size: 13.5px; color: var(--text); line-height: 1.55; }
-    @keyframes expl-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
     @media (max-width: 600px) { .header { padding: 16px 20px; } .wrapper { padding: 40px 20px; } }
   </style>
@@ -143,7 +133,6 @@
       </div>
       <div class="question-text" id="question-text">...</div>
       <div class="options-list" id="options-list"></div>
-      <div id="explanation-banner" class="explanation-banner" style="display:none"></div>
       <div class="feedback-row"><button class="btn-next" id="btn-next" onclick="nextQuestion()">Prossima →</button></div>
     </div>
 
@@ -240,7 +229,6 @@
       document.getElementById('q-timer').textContent = '0s';
       document.getElementById('question-text').textContent = q.domanda;
       document.getElementById('btn-next').style.display = 'none';
-      hideExplanation();
       startTimer();
 
       const list = document.getElementById('options-list');
@@ -262,25 +250,10 @@
       clickedBtn.classList.add(ok ? 'correct' : 'wrong');
       if (!ok) document.querySelectorAll('.option-btn').forEach(b => { if (b.dataset.text === q.risposta_corretta) b.classList.add('correct'); });
       answers.push({ correct: ok, domanda: q.domanda, scelta: clickedBtn.dataset.text, corretta: q.risposta_corretta });
-      showExplanation(ok, q.spiegazione);
       document.getElementById('btn-next').style.display = 'inline-flex';
     }
 
-    function showExplanation(ok, testo) {
-      const banner = document.getElementById('explanation-banner');
-      banner.className = 'explanation-banner ' + (ok ? 'correct' : 'wrong');
-      banner.innerHTML = `<div class="expl-icon">${ok ? '✅' : '❌'}</div>
-        <div><div class="expl-label ${ok ? 'correct' : 'wrong'}">${ok ? 'Risposta corretta!' : 'Risposta sbagliata'}</div>
-        <div class="expl-body">${testo || ''}</div></div>`;
-      banner.style.display = 'flex';
-    }
-
-    function hideExplanation() {
-      document.getElementById('explanation-banner').style.display = 'none';
-    }
-
     function nextQuestion() {
-      hideExplanation();
       currentIndex++;
       if (currentIndex >= testQuestions.length) showResults();
       else renderQuestion();
