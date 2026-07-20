@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Informativa Privacy — Scuola Internazionale Etica &amp; Sicurezza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:          #f8faff;
+      --card:        #ffffff;
+      --blue:        #1a56db;
+      --blue-lt:     #3b82f6;
+      --blue-dk:     #1e40af;
+      --cyan:        #0891B2;
+      --teal:        #0D9488;
+      --text:        #0f1f3d;
+      --text-dim:    #5b6b8c;
+      --text-mute:   #94a3b8;
+      --border:      rgba(26,86,219,.20);
+      --border-soft: rgba(26,86,219,.10);
+    }
+    html, body { min-height: 100vh; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+
+    /* ── NAVBAR ── */
+    .nav {
+      height: 58px; display: flex; align-items: center; padding: 0 32px; gap: 16px;
+      background: rgba(255,255,255,.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 200;
+    }
+    .nav-logo { height: 32px; width: auto; display: block; }
+    .nav-sep { flex: 1; }
+    .back-link {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12.5px; font-weight: 600; color: var(--text-dim);
+      text-decoration: none; padding: 7px 14px; border-radius: 8px;
+      border: 1px solid var(--border); transition: all .2s;
+    }
+    .back-link:hover { color: var(--blue-dk); border-color: var(--blue); background: rgba(26,86,219,.06); }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #1a4fc4 0%, #0a82b8 55%, #0d8c7e 100%);
+      padding: 52px 32px 60px; position: relative; overflow: hidden;
+      box-shadow: 0 2px 24px rgba(26,86,219,.25);
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0; opacity: .10;
+      background-image:
+        linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .hero-inner { max-width: 780px; margin: 0 auto; position: relative; z-index: 1; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: #fde68a; margin-bottom: 14px;
+    }
+    .hero h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800; color: #fff; letter-spacing: -.4px; margin-bottom: 10px;
+    }
+    .hero p { font-size: 14px; color: rgba(255,255,255,.80); line-height: 1.6; max-width: 560px; }
+
+    /* ── MAIN ── */
+    .main { max-width: 780px; margin: 0 auto; padding: 44px 32px 80px; }
+
+    .doc-card {
+      background: var(--card); border: 1.5px solid var(--border); border-radius: 20px;
+      padding: 44px 48px; box-shadow: 0 4px 28px rgba(26,86,219,.07);
+    }
+    .doc-updated {
+      font-size: 12px; color: var(--text-mute); margin-bottom: 36px;
+      padding-bottom: 20px; border-bottom: 1px solid var(--border-soft);
+    }
+
+    .section { margin-bottom: 36px; }
+    .section:last-child { margin-bottom: 0; }
+    .section-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 8px;
+      background: rgba(26,86,219,.10); color: var(--blue);
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 800;
+      margin-right: 10px; flex-shrink: 0;
+    }
+    .section-title {
+      display: flex; align-items: center;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800;
+      color: var(--text); letter-spacing: -.2px; margin-bottom: 14px;
+    }
+    .section-body { font-size: 14px; color: var(--text-dim); line-height: 1.75; padding-left: 36px; }
+    .section-body p { margin-bottom: 12px; }
+    .section-body p:last-child { margin-bottom: 0; }
+    .section-body ul { margin: 10px 0 12px; padding-left: 20px; }
+    .section-body li { margin-bottom: 6px; }
+    .section-body strong { color: var(--text); font-weight: 600; }
+
+    .info-box {
+      background: rgba(26,86,219,.04); border: 1px solid var(--border-soft);
+      border-radius: 12px; padding: 16px 20px; margin-top: 6px;
+    }
+    .info-row { display: flex; gap: 8px; font-size: 13.5px; margin-bottom: 6px; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-row .lbl { color: var(--text-mute); min-width: 130px; flex-shrink: 0; }
+    .info-row .val { color: var(--text); font-weight: 600; }
+    .info-row .val a { color: var(--blue); text-decoration: none; }
+    .info-row .val a:hover { text-decoration: underline; }
+
+    .rights-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px;
+    }
+    .right-chip {
+      display: flex; align-items: center; gap: 10px;
+      background: #fff; border: 1px solid var(--border-soft); border-radius: 10px;
+      padding: 12px 14px; font-size: 13px; font-weight: 600; color: var(--text);
+    }
+    .right-chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+
+    .contact-box {
+      background: linear-gradient(135deg, rgba(26,86,219,.06) 0%, rgba(8,145,178,.05) 100%);
+      border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 24px; margin-top: 6px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .contact-box .txt { flex: 1; min-width: 200px; font-size: 13.5px; color: var(--text-dim); }
+    .contact-box a {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #fff; border-radius: 9px; font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(26,86,219,.28);
+    }
+
+    @media (max-width: 640px) {
+      .nav { padding: 0 16px; }
+      .hero { padding: 40px 16px 44px; }
+      .main { padding: 32px 16px 60px; }
+      .doc-card { padding: 28px 22px; }
+      .section-body { padding-left: 0; }
+      .rights-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <img src="logo_sies.png" alt="Scuola Internazionale Etica &amp; Sicurezza" class="nav-logo">
+    <div class="nav-sep"></div>
+    <a href="index.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L4 7l5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Torna alla piattaforma
+    </a>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        Trattamento dei dati
+      </div>
+      <h1>Informativa Privacy</h1>
+      <p>Informativa resa ai sensi degli articoli 13 e 14 del Regolamento (UE) 2016/679 (GDPR) in merito al trattamento dei dati raccolti dalla piattaforma di simulazione d'esame.</p>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="doc-card">
+      <div class="doc-updated">Ultimo aggiornamento: 17 luglio 2026</div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">1</span>Titolare del trattamento</div>
+        <div class="section-body">
+          <p>Il Titolare del trattamento dei dati raccolti tramite questa piattaforma è:</p>
+          <div class="info-box">
+            <div class="info-row"><span class="lbl">Ragione sociale</span><span class="val">GAM Education &amp; Consulting S.r.l.</span></div>
+            <div class="info-row"><span class="lbl">Contatto privacy</span><span class="val"><a href="mailto:privacy@scuola3a.it">privacy@scuola3a.it</a></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">2</span>Finalità del trattamento</div>
+        <div class="section-body">
+          <p>I dati raccolti attraverso la piattaforma sono trattati esclusivamente per finalità <strong>didattiche e formative</strong>, in particolare per:</p>
+          <ul>
+            <li>Monitorare l'andamento delle simulazioni d'esame svolte dagli studenti delle classi;</li>
+            <li>Fornire ai docenti e ai tutor una panoramica aggregata dei risultati per classe e per macrotema;</li>
+            <li>Suggerire percorsi di allenamento mirati (es. micro-simulazioni) sulla base delle aree con punteggio più basso.</li>
+          </ul>
+          <p>I dati non sono in alcun caso utilizzati per finalità di profilazione commerciale, marketing o comunicazione a terzi.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">3</span>Dati raccolti</div>
+        <div class="section-body">
+          <p>La piattaforma raccoglie e conserva esclusivamente i seguenti dati, generati automaticamente al termine di ogni simulazione:</p>
+          <ul>
+            <li><strong>Punteggio</strong> ottenuto (numero di risposte corrette sul totale);</li>
+            <li><strong>Categoria/gruppo</strong> di appartenenza (es. classe ISP, ISP128, Interaziendale);</li>
+            <li><strong>Tipo di simulazione</strong> svolta (micro-simulazione tematica o simulazione completa) ed eventuale macrotema;</li>
+            <li><strong>Data e ora di completamento</strong> della simulazione.</li>
+          </ul>
+          <p><strong>Nessun dato personale direttamente identificativo</strong> (nome, cognome, email, codice fiscale, indirizzo IP o altro identificatore univoco della persona fisica) viene raccolto o associato ai risultati salvati sul database della piattaforma.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">4</span>Base giuridica</div>
+        <div class="section-body">
+          <p>Il trattamento si fonda sul <strong>legittimo interesse didattico</strong> del Titolare (art. 6, par. 1, lett. f, GDPR) a monitorare l'efficacia del percorso formativo e i progressi delle classi, in un contesto in cui i dati trattati non sono riconducibili a persone fisiche identificabili.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">5</span>Conservazione dei dati</div>
+        <div class="section-body">
+          <p>I dati raccolti sono conservati per tutta la durata del corso e comunque non oltre il <strong>termine del corso stesso</strong>, trascorso il quale saranno cancellati o resi anonimi in modo permanente, salvo diversi obblighi di legge.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">6</span>Diritti dell'interessato</div>
+        <div class="section-body">
+          <p>In qualità di interessato, hai diritto in ogni momento di esercitare i diritti previsti dagli articoli 15-22 del GDPR, tra cui:</p>
+          <div class="rights-grid">
+            <div class="right-chip"><span class="dot"></span>Accesso ai dati</div>
+            <div class="right-chip"><span class="dot"></span>Rettifica dei dati</div>
+            <div class="right-chip"><span class="dot"></span>Cancellazione dei dati</div>
+            <div class="right-chip"><span class="dot"></span>Opposizione al trattamento</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="section-num">7</span>Contatto per l'esercizio dei diritti</div>
+        <div class="section-body">
+          <p>Per esercitare i diritti sopra descritti, o per qualsiasi richiesta relativa al trattamento dei dati, puoi scrivere a:</p>
+          <div class="contact-box">
+            <div class="txt">Il Titolare risponderà alla tua richiesta nel più breve tempo possibile e comunque entro i termini previsti dalla normativa vigente.</div>
+            <a href="mailto:privacy@scuola3a.it">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+              privacy@scuola3a.it
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

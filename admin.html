@@ -314,7 +314,6 @@
 
     const SUPABASE_URL = 'https://athqmxqratfyxnhmhwbn.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_aVmmITMnZw0aqdxZoDNPkg_9_Cbarpn';
-    const KNOWN_USERS = { 'isp': 'ISP', 'inter': 'Interaziendale', 'isp128': 'ISP128' };
     const GROUP_TO_USER = { 'ISP': 'isp', 'Interaziendale': 'inter', 'ISP128': 'isp128' };
 
     // ── Supabase fetch ──────────────────────────────────────────────────
@@ -337,16 +336,6 @@
         ts:       new Date(r.data_completamento).getTime(),
         tema:     r.macrotema || null
       }));
-    }
-
-    // ── localStorage fallback ───────────────────────────────────────────
-    function getAllResultsLocal() {
-      const out = [];
-      Object.entries(KNOWN_USERS).forEach(([user, gruppo]) => {
-        const data = JSON.parse(localStorage.getItem('alpha_test_results_' + user) || '[]');
-        data.forEach(r => out.push({ ...r, user, gruppo }));
-      });
-      return out.sort((a, b) => b.ts - a.ts);
     }
 
     let currentTab = 'all';
@@ -431,11 +420,14 @@
     async function render() {
       try {
         allData = await fetchFromSupabase();
+        doRender();
       } catch (e) {
-        console.warn('Supabase non disponibile, uso localStorage:', e);
-        allData = getAllResultsLocal();
+        console.error('Errore nel caricamento dei risultati da Supabase:', e);
+        allData = [];
+        doRender();
+        document.getElementById('tbody').innerHTML =
+          '<tr class="empty-row"><td colspan="6">Errore nel caricamento dei dati da Supabase. Ricarica la pagina o riprova più tardi.</td></tr>';
       }
-      doRender();
     }
 
     function showTab(tab) {
